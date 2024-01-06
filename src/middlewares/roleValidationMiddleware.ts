@@ -1,17 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-
-interface CustomRequest extends Request {
-  user?: {
-    role: string;
-  };
-}
+import { AuthenticatedRequest } from './authorizeMiddleware'
 
 const roleValidationMiddleware = (allowedRoles: string[]) => {
-  return (req: CustomRequest, res: Response, next: NextFunction) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userRole = req.user?.role;
       if (!userRole || !allowedRoles.includes(userRole)) {
-        return res.status(403).json({ error: 'you have the permission to perform this operation' });
+        return res.status(403).json({ error: `you don't have the permission to perform this operation` });
       }
       next();
     } catch (error) {

@@ -1,18 +1,17 @@
 import express, { Router, Request, Response } from 'express';
-import { validateCreateJob } from '../middlewares/validationMiddleware';
 import { authorize } from '../middlewares/authorizeMiddleware';
-import { roleValidationMiddleware } from '../middlewares/roleValidationMiddleware';
 import jobController from '../controllers/jobController';
+import { validateApplyJob } from '../middlewares/validationMiddleware';
 
 const router: Router = express.Router();
 
 router.route('/')
-    .post(authorize, roleValidationMiddleware(["admin"]), validateCreateJob, jobController.createJob)
-
-router.route('/')
-    .get(authorize, roleValidationMiddleware(["admin"]), jobController.listJob)
+    .get(authorize, jobController.listJob)
 
 router.route('/:id')
-    .delete(authorize, roleValidationMiddleware(["admin"]), jobController.deleteJob)
+    .get(authorize, jobController.getJob)
+
+router.route('/apply/:id')
+    .post(authorize, validateApplyJob, jobController.applyToJob)
 
 export default router;

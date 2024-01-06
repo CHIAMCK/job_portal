@@ -33,4 +33,4 @@ function authorize(req: AuthenticatedRequest, res: Response, next: NextFunction)
   }
 }
 
-export { authorize };
+export { authorize, AuthenticatedRequest };

@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import routes from './routes'
 import { errorConverterMiddleware } from './middlewares/errorConverterMiddleware'
 
-
 dotenv.config();
 const app = express();
 const PORT = 3000;

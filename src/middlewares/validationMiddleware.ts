@@ -41,4 +41,15 @@ const validateCreateJob = [
     },
 ];
 
-export { validateUserCreation, validatLogIn, validateCreateJob };
+const validateApplyJob = [
+    body('resume').notEmpty().withMessage('Description is required'),
+    (req: Request, res: Response, next: NextFunction) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        next();
+    },
+];
+
+export { validateUserCreation, validatLogIn, validateCreateJob, validateApplyJob };
