@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose, { ConnectOptions } from 'mongoose';
 import dotenv from 'dotenv';
 import routes from './routes'
+import { errorConverterMiddleware } from './middlewares/errorConverterMiddleware'
+
 
 dotenv.config();
 const app = express();
@@ -10,6 +12,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/v1', routes);
+app.use(errorConverterMiddleware);
 
 async function connectToDatabase() {
     const dbUrl = process.env.DB_CONNECTION_STRING as string;

@@ -5,6 +5,7 @@ interface User {
   lastName: string;
   email: string;
   password: string;
+  role: 'user' | 'admin';
 }
 
 interface UserDocument extends User, Document {}
@@ -14,6 +15,7 @@ const userSchema = new Schema<UserDocument>({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
 });
 
 const UserModel = model<UserDocument>('User', userSchema);
