@@ -22,11 +22,9 @@ function authorize(req: AuthenticatedRequest, res: Response, next: NextFunction)
     const decodedToken = verify(token, process.env.JWT_SECRET as string);
 
     if (typeof decodedToken === 'string') {
-      // Handle the case where decodedToken is a string (should not happen)
       return res.status(403).json({ error: 'Forbidden - Invalid token' });
     }
 
-    // Assign the decoded token to req.user using the correct user data structure
     req.user = decodedToken as UserData;
 
     next();

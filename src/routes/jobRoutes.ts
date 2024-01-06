@@ -12,4 +12,7 @@ router.route('/')
 router.route('/')
     .get(authorize, roleValidationMiddleware(["admin"]), jobController.listJob)
 
+router.route('/:id')
+    .delete(authorize, roleValidationMiddleware(["admin"]), jobController.deleteJob)
+
 export default router;

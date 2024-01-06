@@ -28,21 +28,16 @@ class UserController {
   async logIn(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
     try {
-        // Find the user with the provided email
         const user = await UserModel.findOne({ email });
-
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        // Compare the entered password with the hashed password
         const passwordMatch = await bcrypt.compare(password, user.password);
-
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        // Generate a JWT token
         const token = jwt.sign({ 
             userId: user._id,
             role: user.role
@@ -50,10 +45,7 @@ class UserController {
             expiresIn: process.env.JWT_EXPIRE,
         });
 
-        // Set the token in the response header
         res.setHeader('Authorization', `Bearer ${token}`);
-
-        // Optionally, you can respond with user data
         res.status(200).json();
     } catch (error) {
         next(error);    
