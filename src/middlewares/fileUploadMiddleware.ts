@@ -1,8 +1,12 @@
 import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
+import path from 'path';
 
 const uploadDestination = './uploads/';
+interface CustomRequest extends express.Request {
+    image?: string;
+  }
 
 // Create the destination folder if it doesn't exist
 if (!fs.existsSync(uploadDestination)) {
@@ -10,22 +14,22 @@ if (!fs.existsSync(uploadDestination)) {
 }
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, uploadDestination);
-    },
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    },
-  });
-  
+  destination: (req, file, cb) => {
+    cb(null, uploadDestination);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
 const upload = multer({ storage });
 
 const fileUploadMiddleware = (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const singleUpload = upload.single('image'); 
+  const singleUpload = upload.single('image');
 
   singleUpload(req, res, (err: any) => {
     if (err) {
@@ -36,7 +40,10 @@ const fileUploadMiddleware = (
       return res.status(400).json({ error: 'No file provided' });
     }
 
-    next(); 
+    // Set the image path in req.image
+    req.body.image = path.join(uploadDestination, req.file.originalname);
+
+    next();
   });
 };
 

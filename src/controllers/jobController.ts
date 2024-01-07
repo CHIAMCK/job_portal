@@ -8,6 +8,7 @@ class JobController {
   async createJob(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, description, image, active, postedAt, company, salary } = req.body;
+      console.log("image", image)
       const newJob = new JobModel({
         title,
         description,
