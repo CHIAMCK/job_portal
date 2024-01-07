@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from './authorizeMiddleware'
 
 const roleValidationMiddleware = (allowedRoles: string[]) => {
