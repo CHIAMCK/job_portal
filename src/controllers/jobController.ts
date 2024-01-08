@@ -1,14 +1,13 @@
-// controllers/JobController.ts
 import { Request, Response, NextFunction } from 'express';
 import JobModel, { JobDocument } from '../models/job';
-import JobApplicationModel from '../models/jobApplication';
+import JobApplicationModel, { JobApplicationDocument } from '../models/jobApplication';
 import { AuthenticatedRequest } from '../middlewares/authorizeMiddleware';
+import mongoose, { Types } from 'mongoose';
 
 class JobController {
   async createJob(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, description, image, active, postedAt, company, salary } = req.body;
-      console.log("image", image)
       const newJob = new JobModel({
         title,
         description,
@@ -115,6 +114,39 @@ class JobController {
         next(error);
     }
   }
+
+  async getAppliedJobs(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+
+      const appliedJobsData: JobApplicationDocument[] = await JobApplicationModel.find({ userId });
+      const validJobIds: Types.ObjectId[] = await getValidJobIds(appliedJobsData);
+      const appliedJobs: JobDocument[] = await JobModel.find({ _id: { $in: validJobIds }, active: true })
+        .select('-description -postedAt -active -salary -_id');
+      res.status(200).json({
+        appliedJobs,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+async function getValidJobIds(appliedJobsData: JobApplicationDocument[]): Promise<Types.ObjectId[]> {
+  const validJobIds: Types.ObjectId[] = [];
+
+  for (const application of appliedJobsData) {
+    if (mongoose.Types.ObjectId.isValid(application.jobId)) {
+      validJobIds.push(new mongoose.Types.ObjectId(application.jobId.toString()));
+    } else {
+      console.error(`Invalid ObjectId: ${application.jobId}`);
+    }
+  }
+
+  return validJobIds;
 }
 
 export default new JobController();

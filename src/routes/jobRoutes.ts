@@ -55,6 +55,32 @@ router.route('/')
 
 /**
  * @swagger
+ * /jobs/applied:
+ *   get:
+ *     summary: Get applied jobs for the authenticated user.
+ *     description: Retrieve a list of jobs that the authenticated user has applied to.
+ *     tags:
+ *       - Jobs
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response with applied jobs.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 appliedJobs:
+ *                   type: array
+ *       '401':
+ *         description: Unauthorized
+ */
+router.route('/applied')
+    .get(authorize, jobController.getAppliedJobs)    
+
+/**
+ * @swagger
  * /jobs/{id}:
  *   get:
  *     summary: Get details of a specific job

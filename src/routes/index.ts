@@ -4,7 +4,6 @@ import jobRoutes from './jobRoutes'
 import adminRoutes from './admin'
 import authRoutes from './authRoutes'
 
-
 const router: Router = express.Router();
 
 router.use('/auth', authRoutes);

@@ -1,12 +1,10 @@
-// @ts-ignore
 import { Request, Response, NextFunction } from 'express';
 import { expect } from 'chai';
 import sinon, { SinonSandbox, SinonStub, SinonStubbedInstance } from 'sinon';
 import bcrypt from 'bcrypt';
-import UserModel from '../../models/user'; // Replace with the actual path to your UserModel
-import AuthController from '../authController'; // Replace with the actual path to your AuthController
+import UserModel from '../../models/user';
+import AuthController from '../authController';
 
-// Define a type alias for the stubbed Response
 type StubbedResponse = SinonStubbedInstance<Response>;
 
 describe('AuthController', () => {
@@ -30,7 +28,6 @@ describe('AuthController', () => {
       },
     };
 
-    // Manually create a stubbed instance of Response
     res = {
       status: sandbox.stub(),
       json: sandbox.stub(),
@@ -57,7 +54,6 @@ describe('AuthController', () => {
     // Invoke the register function
     await AuthController.register(req as Request, res as Response, next);
 
-    // Assertions
     expect(hashStub.calledWith('securePassword', 10)).to.equal(true);
     expect(saveStub.called).to.equal(true);
     expect(res.status.calledWith(201)).to.equal(true);
